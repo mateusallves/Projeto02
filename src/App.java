@@ -1,9 +1,11 @@
 
 
-//import com.google.gson.Gson;
+import com.google.gson.Gson;
 
 
-//mport com.google.gson.reflect.TypeToken;
+import com.google.gson.reflect.TypeToken;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.*;
 
 
@@ -11,10 +13,10 @@ public class App {
     private static ArrayList<String> nomes = new ArrayList<>();
     private static final String arquivo = "nomes.json";
     private static final Scanner scanner = new Scanner(System.in);
-   // private static final Gson gson = new Gson();
+   private static final Gson gson = new Gson();
 
     public static void main(String[] args) {
-        //carregarNomes();
+        carregarNomes();
 
         while (true) {
             System.out.println("\nMenu:");
@@ -34,7 +36,7 @@ public class App {
                 case 2: listarNomes(); break;
                 case 3: removerNome(); break;
                 case 4: buscarNome(); break;
-               // case 5: salvarNomes(); break;
+                case 5: salvarNomes(); break;
                // case 6: carregarNomes(); break;
                 case 0:
                     System.out.println("Encerrando...");
@@ -85,6 +87,23 @@ public class App {
             System.out.println("Nome não encontrado.");
         }
     }
+     private static void salvarNomes() {
+        try (FileWriter writer = new FileWriter(arquivo)) {
+            gson.toJson(nomes, writer);
+            System.out.println("Nomes salvos em " + arquivo);
+        } catch (Exception e) {
+            System.out.println("Erro ao salvar nomes: " + e.getMessage());
+        }
+    }
 
+    private static void carregarNomes() {
+        try (FileReader reader = new FileReader(arquivo)) {
+            nomes = gson.fromJson(reader, new TypeToken<ArrayList<String>>(){}.getType());
+            if (nomes == null) nomes = new ArrayList<>();
+            System.out.println("Nomes carregados de " + arquivo);
+        } catch (Exception e) {
+            System.out.println("Arquivo não encontrado ou erro ao carregar. Iniciando com lista vazia.");
+        }
+    }
 
 }
